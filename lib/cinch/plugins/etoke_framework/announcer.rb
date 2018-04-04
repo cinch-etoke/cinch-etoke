@@ -6,6 +6,22 @@ module Cinch
           Formatter.default "#{starter} has called for an etoke! Type !join to join in!"
         end
 
+        def etoke_already_exists
+          Formatter.default "THERE'S ALREADY AN ETOKE IDIOT!!!!"
+        end
+
+        def etoke_requested_but_none_exists
+          Formatter.default "NO ETOKE ON THIS CHANNEL ATM BRO ILL MAKE ONE FOR YOU H/O"
+        end
+
+        def toker_attempted_to_join_own_etoke
+          Formatter.default "GREAT JOB IDIOT ITS YOUR GODDAMN ETOKE"
+        end
+
+        def toker_is_already_in_the_etoke
+          Formatter.default "HEY ASSHOLE YOU'RE ALREADY IN THE ETOKE"
+        end
+
         def toker_added(toker)
           Formatter.default "#{toker} has joined the etoke! Type !join to join them!"
         end

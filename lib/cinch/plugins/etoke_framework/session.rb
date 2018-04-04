@@ -6,10 +6,10 @@ module Cinch
   module Plugins
     module EtokeFramework
       class Session
-        FIRST_ANNOUNCEMENT_AT = 5
-        AUTO_TOKE_AT = 10
+        FIRST_ANNOUNCEMENT_AT = 10
+        AUTO_TOKE_AT = 20
 
-        attr_reader :tokers
+        attr_reader :tokers, :starter
 
         def initialize(channel:, options: {}, timer_starter: nil)
           @channel = channel
@@ -23,6 +23,7 @@ module Cinch
           @starter = starter
           @tokers << @starter
 
+          # TODO: Create a minder class that can do these announcements AND automatically start the toke
           @timers << @timer_starter.set(FIRST_ANNOUNCEMENT_AT) { self.give_two_minute_warning }
           @timers << @timer_starter.set(AUTO_TOKE_AT) { self.give_autotoke_warning }
           @timers << @timer_starter.set(AUTO_TOKE_AT + 20) { self.commence_autotoke }
@@ -33,16 +34,17 @@ module Cinch
         def add_toker(toker_name)
           raise TokerExistsError if @tokers.include? toker_name
           @tokers << toker_name
+          @channel.send @announcer.toker_added(toker_name)
         end
 
         # This method should probably be private but it needs to be triggerable by a Cinch timer
         def give_two_minute_warning
-          @channel.msg @announcer.two_minute_warning(tokers: @tokers, starter: @starter)
+          @channel.send @announcer.two_minute_warning(tokers: @tokers, starter: @starter)
         end
 
         # This method should probably be private but it needs to be triggerable by a Cinch timer
         def give_autotoke_warning
-          @channel.msg @announcer.auto_toke_starting(tokers: @tokers, starter: @starter)
+          @channel.send @announcer.auto_toke_starting(tokers: @tokers, starter: @starter)
         end
 
         class TokerExistsError < StandardError; end

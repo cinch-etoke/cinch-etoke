@@ -4,18 +4,24 @@ module Cinch
   module Plugins
     module EtokeFramework
       class SessionRegistry
-        def initialize(timer_starter: CinchBridge::NullTimerStarter.new)
+        def initialize(timer_starter: CinchBridge::NullTimerStarter.new, options: {})
           @timer_starter = timer_starter
-          @sessions = {}
+          @sessions = options[:sessions] || {}
         end
 
         def create_session(channel:, starter:)
-          raise SessionExistsError if @sessions.keys.include? channel.name
+          raise SessionExistsForChannelError if @sessions.keys.include? channel.name
           @sessions[channel.name] = Session.new(timer_starter: @timer_starter, channel: channel)
           @sessions[channel.name].initiate(starter)
         end
 
-        class SessionExistsError < StandardError; end
+        def find(channel_name)
+          raise SessionNotFoundError unless @sessions.keys.include? channel_name
+          @sessions[channel_name]
+        end
+
+        class SessionExistsForChannelError < StandardError; end
+        class SessionNotFoundError < StandardError; end
       end
     end
   end
