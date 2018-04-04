@@ -1,6 +1,7 @@
 module Cinch
   module Plugins
     module EtokeFramework
+      # TODO: Rename to 'Messages' or something
       class Announcer
         def session_started(starter)
           Formatter.default "#{starter} has called for an etoke! Type !join to join in!"
@@ -34,7 +35,7 @@ module Cinch
           end
         end
 
-        def auto_toke_starting(tokers:, starter:)
+        def autotoke_starting(tokers:, starter:)
           if tokers.count == 1
             Formatter.default "Poor #{starter} has to toke alone. Auto-toke commencing. Hit it!"
           else
