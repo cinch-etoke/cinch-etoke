@@ -7,7 +7,7 @@ module Cinch
   module Plugins
     module EtokeFramework
       class Session
-        FIRST_ANNOUNCEMENT_AT = 10
+        FIRST_ANNOUNCEMENT_AT = 5
         AUTO_TOKE_AT = 20
 
         attr_reader :tokers, :starter
