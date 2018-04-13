@@ -17,6 +17,10 @@ module Cinch
           end
         end
 
+        def cannot_retoke
+          Formatter.default "Too long has passed since the last etoke to retoke, start another one!"
+        end
+
         def etoke_already_exists
           Formatter.default "THERE'S ALREADY AN ETOKE IDIOT!!!!"
         end
