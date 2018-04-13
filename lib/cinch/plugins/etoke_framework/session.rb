@@ -34,6 +34,7 @@ module Cinch
         end
 
         def add_toker(toker_name)
+          return if @started
           raise TokerExistsError if @tokers.include? toker_name
           @tokers << toker_name
           @channel.send @announcer.toker_added(toker_name)
@@ -45,6 +46,7 @@ module Cinch
         end
 
         def force_start
+          return if @started; @started = true
           @timers.each { |t| t.stop }
           @announcer.toke_starting(tokers: tokers, starter: starter)
           EtokePerformer.new(
