@@ -13,8 +13,7 @@ module Cinch
 
         attr_reader :tokers, :starter
 
-        def initialize(registry: nil, channel:, options: {}, timer_starter: nil)
-          @registry = registry
+        def initialize(channel:, options: {}, timer_starter: nil)
           @channel = channel
           @announcer = Announcer.new || options[:announcer]
           @tokers = options[:tokers] || []
