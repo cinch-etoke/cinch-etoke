@@ -52,9 +52,14 @@ module Cinch
         def force_start
           return unless @state == :not_started
           @timers.each { |t| t.stop }
+          perform_etoke
+        end
+
+        private def perform_etoke
+          @state = :started
           @channel.send @announcer.toke_starting(tokers: tokers, starter: starter)
           EtokePerformer.new(
-            registry: @registry,
+            session: self,
             timer_starter: @timer_starter,
             channel: @channel,
             announcer: @announcer
