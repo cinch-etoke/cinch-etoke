@@ -1,5 +1,6 @@
 require 'cinch'
 require "cinch/plugins/etoke_framework/announcer"
+require "cinch/plugins/etoke_framework/etoke_performer"
 require "cinch/plugins/cinch_bridge/timer_starter"
 
 module Cinch
@@ -38,6 +39,17 @@ module Cinch
           @channel.send @announcer.toker_added(toker_name)
         end
 
+
+        def force_start
+          @timers.each { |t| t.stop }
+          @announcer.toke_starting(tokers: tokers, starter: starter)
+          EtokePerformer.new(
+            registry: @registry,
+            timer_starter: @timer_starter,
+            channel: @channel,
+            announcer: @announcer
+          ).perform
+        end
 
         private def two_minute_warning
           message = @announcer.two_minute_warning(tokers: tokers, starter: starter)
