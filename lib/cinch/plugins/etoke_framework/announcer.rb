@@ -13,7 +13,7 @@ module Cinch
           if tokers.count == 1
             Formatter.default "Poor #{starter} has to toke alone. Auto-toke commencing. Hit it!"
           else
-            "#{starter} is spaced out; auto-toke! Get ready to smoke #{tokers.join(", ")}"
+            Formatter.default "#{starter} is spaced out; auto-toke! Get ready to smoke #{tokers.join(", ")}"
           end
         end
 
@@ -57,7 +57,7 @@ module Cinch
           if tokers.count == 1
             Formatter.default "#{starter} is toking alone! It’s time to _\\|/_ ( .__.)  . o 0 ( smoke weed ) in...."
           else
-            "#{tokers.join(", ")} get excited!!! It’s time to _\\|/_ ( .__.)  . o 0 ( smoke weed ) in...."
+            Formatter.default "#{tokers.join(", ")} get excited!!! It’s time to _\\|/_ ( .__.)  . o 0 ( smoke weed ) in...."
           end
         end
       end
