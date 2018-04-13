@@ -11,7 +11,7 @@ module Cinch
 
         def create(channel:, starter:)
           raise SessionExistsForChannelError if @sessions.keys.include? channel.name
-          @sessions[channel.name] = Session.new(timer_starter: @timer_starter, channel: channel)
+          @sessions[channel.name] = Session.new(registry: self, timer_starter: @timer_starter, channel: channel)
           @sessions[channel.name].initiate(starter)
         end
 
