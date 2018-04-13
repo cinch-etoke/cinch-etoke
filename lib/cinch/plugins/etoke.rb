@@ -39,6 +39,14 @@ module Cinch
         reply_with_toker_exists_message(m, session)
       end
 
+      match /start/i, method: :start
+      private def start(m)
+        session = @sessions.find(m.channel)
+        session.start(m.user.nick)
+      rescue SessionRegistry::SessionNotFoundError
+        m.reply Announcer.new.etoke_started_but_none_exists
+      end
+
       match /start anyway/i, method: :start_anyway
       private def start_anyway(m)
         session = @sessions.find(m.channel)

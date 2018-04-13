@@ -39,6 +39,10 @@ module Cinch
           @channel.send @announcer.toker_added(toker_name)
         end
 
+        def start(starting_toker)
+          raise IncorrectStarterError if starting_toker != starter
+          force_start
+        end
 
         def force_start
           @timers.each { |t| t.stop }
@@ -62,6 +66,7 @@ module Cinch
         end
 
         class TokerExistsError < StandardError; end
+        class IncorrectStarterError < StandardError; end
       end
     end
   end

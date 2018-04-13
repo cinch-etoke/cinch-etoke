@@ -21,35 +21,17 @@ RSpec.describe Cinch::Plugins::EtokeFramework::Session do
     end
   end
 
-  xdescribe "#start" do
-    it "cannot be started by somebody other than the starter" do
-      channel = instance_double(Cinch::Channel, name: '#test', send: nil)
-      subject = described_class.new(channel: channel)
-      subject.initiate("Char")
+  describe "#start" do
+    describe "error handling" do
+      it "cannot be started by somebody other than the starter" do
+        channel = instance_double(Cinch::Channel, name: '#test', send: nil)
+        subject = described_class.new(channel: channel)
+        subject.initiate("Char")
 
-      expect {
-        subject.start("hellcat")
-      }.to raise_error Cinch::Plugins::Etoke::Session::IncorrectStarterError
-    end
-
-    it "cannot be started once already started" do
-      channel = instance_double(Cinch::Channel, name: '#test')
-      subject = described_class.new(starter: "Char", channel: channel)
-      subject.initiate("Char")
-      subject.start("Char")
-      subject.start("Char")
-    end
-
-    it "cancels all timers currently in progress"
-  end
-
-  describe "#force_start" do
-    it 'allows anybody to start the session' do
-
-    end
-
-    it "cannot be started once already started" do
-
+        expect {
+          subject.start("hellcat")
+        }.to raise_error Cinch::Plugins::EtokeFramework::Session::IncorrectStarterError
+      end
     end
   end
 end
