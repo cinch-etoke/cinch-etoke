@@ -75,8 +75,9 @@ module Cinch
           ).perform
         end
 
-        class TokerExistsError < StandardError; end
         class IncorrectStarterError < StandardError; end
+        class TokerExistsError < StandardError; end
+        class TooMuchTimeElapsedForRetoke < StandardError; end
       end
     end
   end
