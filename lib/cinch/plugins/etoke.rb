@@ -2,6 +2,7 @@ require 'cinch'
 require "cinch/plugins/cinch_bridge/timer_starter"
 require "cinch/plugins/etoke/version"
 require "cinch/plugins/etoke_framework/announcer"
+require "cinch/plugins/etoke_framework/etoke_performer"
 require "cinch/plugins/etoke_framework/formatter"
 require "cinch/plugins/etoke_framework/session"
 require "cinch/plugins/etoke_framework/session_registry"
