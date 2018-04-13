@@ -48,7 +48,7 @@ module Cinch
         def force_start
           return if @started; @started = true
           @timers.each { |t| t.stop }
-          @announcer.toke_starting(tokers: tokers, starter: starter)
+          @channel.send @announcer.toke_starting(tokers: tokers, starter: starter)
           EtokePerformer.new(
             registry: @registry,
             timer_starter: @timer_starter,
