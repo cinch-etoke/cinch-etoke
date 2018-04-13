@@ -26,8 +26,8 @@ module Cinch
           @starter = starter
           @tokers << @starter
 
-          @timers << @timer_starter.set(FIRST_ANNOUNCEMENT_AT) { two_minute_warning }
-          @timers << @timer_starter.set(AUTO_TOKE_WARNING) { autotoke_warning }
+          @timers << @timer_starter.set(FIRST_ANNOUNCEMENT_AT) { @channel.send @announcer.two_minute_warning(tokers: tokers, starter: starter) }
+          @timers << @timer_starter.set(AUTO_TOKE_WARNING) { @channel.send @announcer.autotoke_starting(tokers: tokers, starter: starter) }
           @timers << @timer_starter.set(AUTO_TOKE_STARTS) { force_start }
 
           @channel.send @announcer.session_started(starter)
@@ -55,16 +55,6 @@ module Cinch
             channel: @channel,
             announcer: @announcer
           ).perform
-        end
-
-        private def two_minute_warning
-          message = @announcer.two_minute_warning(tokers: tokers, starter: starter)
-          @channel.send message
-        end
-
-        private def autotoke_warning
-          message = @announcer.autotoke_starting(tokers: tokers, starter: starter)
-          @channel.send message
         end
 
         class TokerExistsError < StandardError; end
