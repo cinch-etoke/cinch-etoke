@@ -46,6 +46,10 @@ module Cinch
           force_start
         end
 
+        def finish
+          @state = :finished
+        end
+
         def force_start
           return unless @state == :not_started
           @timers.each { |t| t.stop }
