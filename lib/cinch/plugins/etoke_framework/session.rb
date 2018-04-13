@@ -1,14 +1,14 @@
 require 'cinch'
 require "cinch/plugins/etoke_framework/announcer"
-require "cinch/plugins/etoke_framework/autotoke_announcer"
 require "cinch/plugins/cinch_bridge/timer_starter"
 
 module Cinch
   module Plugins
     module EtokeFramework
       class Session
-        FIRST_ANNOUNCEMENT_AT = 5
-        AUTO_TOKE_AT = 20
+        FIRST_ANNOUNCEMENT_AT = 5 # seconds
+        AUTO_TOKE_WARNING = 20 # seconds
+        AUTO_TOKE_STARTS = 25 # seconds
 
         attr_reader :tokers, :starter
 
@@ -24,10 +24,9 @@ module Cinch
           @starter = starter
           @tokers << @starter
 
-          autotoke_announcer = AutotokeAnnouncer.new(channel: @channel, session: self, announcer: @announcer)
-          @timers << @timer_starter.set(FIRST_ANNOUNCEMENT_AT) { autotoke_announcer.two_minute_warning }
-          @timers << @timer_starter.set(AUTO_TOKE_AT) { autotoke_announcer.autotoke_warning }
-          #@timers << @timer_starter.set(AUTO_TOKE_AT + 20) { self.commence_autotoke }
+          @timers << @timer_starter.set(FIRST_ANNOUNCEMENT_AT) { two_minute_warning }
+          @timers << @timer_starter.set(AUTO_TOKE_WARNING) { autotoke_warning }
+          @timers << @timer_starter.set(AUTO_TOKE_STARTS) { force_start }
 
           @channel.send @announcer.session_started(starter)
         end
@@ -36,6 +35,17 @@ module Cinch
           raise TokerExistsError if @tokers.include? toker_name
           @tokers << toker_name
           @channel.send @announcer.toker_added(toker_name)
+        end
+
+
+        private def two_minute_warning
+          message = @announcer.two_minute_warning(tokers: tokers, starter: starter)
+          @channel.send message
+        end
+
+        private def autotoke_warning
+          message = @announcer.autotoke_starting(tokers: tokers, starter: starter)
+          @channel.send message
         end
 
         class TokerExistsError < StandardError; end
