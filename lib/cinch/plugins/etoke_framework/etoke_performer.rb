@@ -2,8 +2,8 @@ module Cinch
   module Plugins
     module EtokeFramework
       class EtokePerformer
-        def initialize(registry:, timer_starter:, channel:, announcer:)
-          @registry = registry
+        def initialize(session:, timer_starter:, channel:, announcer:)
+          @session = session
           @timer_starter = timer_starter
           @channel = channel
           @announcer = announcer
@@ -16,7 +16,7 @@ module Cinch
           @timer_starter.set(3) { @channel.send Formatter.default "2..      .." }
           @timer_starter.set(4) { @channel.send Formatter.default "1.        ." }
           @timer_starter.set(5) { etoke_banner }
-          @timer_starter.set(5) { @registry.remove(@channel.name) }
+          @timer_starter.set(5) { @session.finish }
         end
 
         private def etoke_banner
