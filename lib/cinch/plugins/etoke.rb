@@ -39,7 +39,7 @@ module Cinch
         reply_with_toker_exists_message(m, session)
       end
 
-      match /start/i, method: :start
+      match /start(?! anyway)/i, method: :start
       private def start(m)
         session = @sessions.find(m.channel)
         session.start(m.user.nick)
