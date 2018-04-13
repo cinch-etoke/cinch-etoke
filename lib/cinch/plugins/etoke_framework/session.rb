@@ -51,7 +51,16 @@ module Cinch
 
         def force_start
           return unless @state == :not_started
+
+          @started_at = Time.now
           @timers.each { |t| t.stop }
+          perform_etoke
+        end
+
+        def retoke
+          return unless @state == :finished
+          raise TooMuchTimeElapsedForRetoke if last_toke.toked_at < (Time.now - 60)
+          @channel.send @announcer.retoke_banner
           perform_etoke
         end
 
