@@ -24,7 +24,7 @@ module Cinch
 
       match "etoke", method: :etoke
       private def etoke(m)
-        @sessions.create_session(channel: m.channel, starter: m.user.nick)
+        @sessions.create(channel: m.channel, starter: m.user.nick)
       rescue SessionRegistry::SessionExistsForChannelError
         m.reply Announcer.new.etoke_already_exists
       end
@@ -51,7 +51,7 @@ module Cinch
 
       private def create_new_etoke_for_toker(m, session)
         m.reply Announcer.new.etoke_requested_but_none_exists
-        @sessions.create_session(channel: m.channel, starter: m.user.nick)
+        @sessions.create(channel: m.channel, starter: m.user.nick)
       end
     end
   end

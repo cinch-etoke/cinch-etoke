@@ -3,12 +3,12 @@ require "cinch/plugins/etoke_framework/session"
 require "cinch/plugins/etoke_framework/session_registry"
 
 RSpec.describe Cinch::Plugins::EtokeFramework::SessionRegistry do
-  describe "#create_session" do
+  describe "#create" do
     it 'raises an error if a channel already has a session' do
       channel = instance_double(Cinch::Channel, name: '#test', send: nil)
-      subject.create_session(channel: channel, starter: 'Rob')
+      subject.create(channel: channel, starter: 'Rob')
       expect {
-        subject.create_session(channel: channel, starter: 'Rob')
+        subject.create(channel: channel, starter: 'Rob')
       }.to raise_error Cinch::Plugins::EtokeFramework::SessionRegistry::SessionExistsForChannelError
     end
 
