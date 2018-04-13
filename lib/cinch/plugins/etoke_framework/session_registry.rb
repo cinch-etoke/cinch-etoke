@@ -20,6 +20,10 @@ module Cinch
           @sessions[channel_name]
         end
 
+        def remove(channel_name)
+          @sessions.delete(channel_name)
+        end
+
         class SessionExistsForChannelError < StandardError; end
         class SessionNotFoundError < StandardError; end
       end

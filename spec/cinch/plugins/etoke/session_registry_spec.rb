@@ -32,6 +32,19 @@ RSpec.describe Cinch::Plugins::EtokeFramework::SessionRegistry do
         subject.find('test')
       }.to raise_error Cinch::Plugins::EtokeFramework::SessionRegistry::SessionNotFoundError
     end
-    it 'does not return finished sessions' # ???
   end
+
+    describe "#remove(channel_name)" do
+      it 'removes a channel from the registry' do
+        session = instance_double(Cinch::Plugins::EtokeFramework::Session)
+        sessions = { 'test' => session }
+
+        subject = described_class.new(options: {sessions: sessions})
+
+        subject.remove('test')
+        expect {
+          subject.find('test')
+        }.to raise_error Cinch::Plugins::EtokeFramework::SessionRegistry::SessionNotFoundError
+      end
+    end
 end
