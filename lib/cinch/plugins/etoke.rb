@@ -45,6 +45,8 @@ module Cinch
         session.start(m.user.nick)
       rescue SessionRegistry::SessionNotFoundError
         m.reply Announcer.new.etoke_started_but_none_exists
+      rescue Session::IncorrectStarterError
+        m.reply Announcer.new.attempted_etoke_theft(session.starter)
       end
 
       match /start anyway/i, method: :start_anyway
