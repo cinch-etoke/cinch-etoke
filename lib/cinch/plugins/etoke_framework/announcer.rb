@@ -5,12 +5,24 @@ module Cinch
     module EtokeFramework
       # TODO: Rename to 'Messages' or something
       class Announcer
-        def session_started(starter)
-          Formatter.default "#{starter} has called for an etoke! Type !join to join in!"
+        def attempted_etoke_theft(starter)
+          Formatter.default "Stop trying to steal #{starter}'s etoke!! Use !start anyway if they fell asleep!"
+        end
+
+        def autotoke_starting(tokers:, starter:)
+          if tokers.count == 1
+            Formatter.default "Poor #{starter} has to toke alone. Auto-toke commencing. Hit it!"
+          else
+            "#{starter} is spaced out; auto-toke! Get ready to smoke #{tokers.join(", ")}"
+          end
         end
 
         def etoke_already_exists
           Formatter.default "THERE'S ALREADY AN ETOKE IDIOT!!!!"
+        end
+
+        def etoke_started_but_none_exists
+          Formatter.default "NO ETOKE ON THIS CHANNEL ATM BRO"
         end
 
         def etoke_requested_but_none_exists
@@ -25,6 +37,10 @@ module Cinch
           Formatter.default "HEY ASSHOLE YOU'RE ALREADY IN THE ETOKE"
         end
 
+        def session_started(starter)
+          Formatter.default "#{starter} has called for an etoke! Type !join to join in!"
+        end
+
         def toker_added(toker)
           Formatter.default "#{toker} has joined the etoke! Type !join to join them!"
         end
@@ -34,14 +50,6 @@ module Cinch
             Formatter.default "#{starter} wants to etoke, won't someone join them? Auto-(alone)-toke in 2 minutes."
           else
             Formatter.default "Looks like #{starter} is asleep #{tokers.join(", ")}. Get ready for the auto-toke in 2 minutes, or use '!start anyway' to start now"
-          end
-        end
-
-        def autotoke_starting(tokers:, starter:)
-          if tokers.count == 1
-            Formatter.default "Poor #{starter} has to toke alone. Auto-toke commencing. Hit it!"
-          else
-            "#{starter} is spaced out; auto-toke! Get ready to smoke #{tokers.join(", ")}"
           end
         end
 
