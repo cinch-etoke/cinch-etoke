@@ -1,3 +1,5 @@
+require "cinch/plugins/etoke_framework/formatter"
+
 module Cinch
   module Plugins
     module EtokeFramework
