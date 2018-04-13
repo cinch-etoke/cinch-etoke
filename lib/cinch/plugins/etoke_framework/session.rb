@@ -20,6 +20,7 @@ module Cinch
           @tokers = options[:tokers] || []
           @timers = []
           @timer_starter = timer_starter || CinchBridge::NullTimerStarter.new
+          @state = :not_started # :not_started -> :started -> :finished
         end
 
         def initiate(starter)
@@ -34,7 +35,7 @@ module Cinch
         end
 
         def add_toker(toker_name)
-          return if @started
+          return unless @state == :not_started
           raise TokerExistsError if @tokers.include? toker_name
           @tokers << toker_name
           @channel.send @announcer.toker_added(toker_name)
@@ -46,7 +47,7 @@ module Cinch
         end
 
         def force_start
-          return if @started; @started = true
+          return unless @state == :not_started
           @timers.each { |t| t.stop }
           @channel.send @announcer.toke_starting(tokers: tokers, starter: starter)
           EtokePerformer.new(
