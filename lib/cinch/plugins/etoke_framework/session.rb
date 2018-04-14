@@ -35,7 +35,7 @@ module Cinch
 
         def add_toker(toker_name)
           return unless @state == :not_started
-          raise TokerExistsError if @tokers.include? toker_name
+          return if @tokers.include? toker_name
           @tokers << toker_name
           @channel.send @announcer.toker_added(toker_name)
         end
@@ -87,7 +87,6 @@ module Cinch
         end
 
         class IncorrectStarterError < StandardError; end
-        class TokerExistsError < StandardError; end
         class TooMuchTimeElapsedForRetoke < StandardError; end
       end
     end
