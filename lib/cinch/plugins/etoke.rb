@@ -10,6 +10,7 @@ require "cinch/plugins/etoke_framework/session_registry"
 module Cinch
   module Plugins
     class Etoke
+      # TODO: Replace exceptions with if
       include Cinch::Plugin
       include Cinch::Plugins::EtokeFramework
 
@@ -45,6 +46,18 @@ module Cinch
         session.add_toker(m.user.nick)
       rescue Session::TokerExistsError
         reply_with_toker_exists_message(m, session)
+      end
+
+      match /retoke/i, method: :retoke
+      private def retoke(m)
+        session = @sessions.find(m.channel)
+
+        if session.nil? || !session.eligible_for_retoke?
+          m.reply Announcer.new.cannot_retoke
+          return
+        end
+
+        session.retoke
       end
 
       match /start(?! anyway)/i, method: :start
