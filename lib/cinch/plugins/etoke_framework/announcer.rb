@@ -33,6 +33,12 @@ module Cinch
           Formatter.default "NO ETOKE ON THIS CHANNEL ATM BRO ILL MAKE ONE FOR YOU H/O"
         end
 
+        def retoke_banner
+          "\002\00307,01/\00300,07\\\00304,07/\00307,04\\\00301,04/\00304,01\\\002" +
+          "\00307,01 WARNING! WARNING! INSUFFICIENT MARIJUANA LEVELS DETECTED! RE-TOKE INITIATING! " +
+          "\002\00307,01/\00300,07\\\00304,07/\00307,04\\\00301,04/\00304,01\\\002"
+        end
+
         def toker_attempted_to_join_own_etoke
           Formatter.default "GREAT JOB IDIOT ITS YOUR GODDAMN ETOKE"
         end
