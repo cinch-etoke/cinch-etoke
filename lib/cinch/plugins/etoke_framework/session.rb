@@ -40,9 +40,10 @@ module Cinch
           @channel.send @announcer.toker_added(toker_name)
         end
 
-        def start(starting_toker)
-          raise IncorrectStarterError if starting_toker != starter
-          force_start
+        def start
+          return unless @state == :not_started
+          @autotoke_timer.stop
+          perform_initial_etoke
         end
 
         def finish
@@ -51,12 +52,6 @@ module Cinch
 
         def finished?
           @state == :finished
-        end
-
-        def force_start
-          return unless @state == :not_started
-          @autotoke_timer.stop
-          perform_initial_etoke
         end
 
         def eligible_for_retoke?
@@ -85,9 +80,6 @@ module Cinch
             announcer: @announcer
           ).perform
         end
-
-        class IncorrectStarterError < StandardError; end
-        class TooMuchTimeElapsedForRetoke < StandardError; end
       end
     end
   end
