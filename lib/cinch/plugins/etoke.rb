@@ -24,17 +24,25 @@ module Cinch
 
       match "etoke", method: :etoke
       private def etoke(m)
-        @sessions.create(channel: m.channel, starter: m.user.nick)
-      rescue SessionRegistry::SessionExistsForChannelError
-        m.reply Announcer.new.etoke_already_exists
+        session = @sessions.find(m.channel)
+        if session.nil? || session.finished?
+          @sessions.create(channel: m.channel, starter: m.user.nick)
+        else
+          m.reply Announcer.new.etoke_already_exists
+        end
       end
 
       match /join|in|imin/i, method: :join
       private def join(m)
         session = @sessions.find(m.channel)
+
+        if session.nil? || session.finished?
+          m.reply Announcer.new.etoke_requested_but_none_exists
+          @sessions.create(channel: m.channel, starter: m.user.nick)
+          return
+        end
+
         session.add_toker(m.user.nick)
-      rescue SessionRegistry::SessionNotFoundError
-        create_new_etoke_for_toker(m, session)
       rescue Session::TokerExistsError
         reply_with_toker_exists_message(m, session)
       end
@@ -42,9 +50,13 @@ module Cinch
       match /start(?! anyway)/i, method: :start
       private def start(m)
         session = @sessions.find(m.channel)
+
+        if session.nil? || session.finished?
+          m.reply Announcer.new.etoke_started_but_none_exists
+          return
+        end
+
         session.start(m.user.nick)
-      rescue SessionRegistry::SessionNotFoundError
-        m.reply Announcer.new.etoke_started_but_none_exists
       rescue Session::IncorrectStarterError
         m.reply Announcer.new.attempted_etoke_theft(session.starter)
       end
@@ -52,9 +64,13 @@ module Cinch
       match /start anyway/i, method: :start_anyway
       private def start_anyway(m)
         session = @sessions.find(m.channel)
+
+        if session.nil? || session.finished?
+          m.reply Announcer.new.etoke_started_but_none_exists
+          return
+        end
+
         session.force_start
-      rescue SessionRegistry::SessionNotFoundError
-        m.reply Announcer.new.etoke_started_but_none_exists
       end
 
       # Helper methods
@@ -65,11 +81,6 @@ module Cinch
         else
           m.reply Announcer.new.toker_is_already_in_the_etoke
         end
-      end
-
-      private def create_new_etoke_for_toker(m, session)
-        m.reply Announcer.new.etoke_requested_but_none_exists
-        @sessions.create(channel: m.channel, starter: m.user.nick)
       end
     end
   end
