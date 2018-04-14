@@ -10,18 +10,13 @@ module Cinch
         end
 
         def create(channel:, starter:)
-          raise SessionExistsForChannelError if @sessions.keys.include? channel.name
           @sessions[channel.name] = Session.new(timer_starter: @timer_starter, channel: channel)
           @sessions[channel.name].initiate(starter)
         end
 
         def find(channel_name)
-          raise SessionNotFoundError unless @sessions.keys.include? channel_name
           @sessions[channel_name]
         end
-
-        class SessionExistsForChannelError < StandardError; end
-        class SessionNotFoundError < StandardError; end
       end
     end
   end
