@@ -10,7 +10,6 @@ require "cinch/plugins/etoke_framework/session_registry"
 module Cinch
   module Plugins
     class Etoke
-      # TODO: Replace exceptions with if
       include Cinch::Plugin
       include Cinch::Plugins::EtokeFramework
 
@@ -43,9 +42,12 @@ module Cinch
           return
         end
 
+        if session.tokers.include? m.user.nick
+          reply_with_toker_exists_message(m, session)
+          return
+        end
+
         session.add_toker(m.user.nick)
-      rescue Session::TokerExistsError
-        reply_with_toker_exists_message(m, session)
       end
 
       match /retoke/i, method: :retoke
@@ -69,9 +71,12 @@ module Cinch
           return
         end
 
-        session.start(m.user.nick)
-      rescue Session::IncorrectStarterError
-        m.reply Announcer.new.attempted_etoke_theft(session.starter)
+        if m.user.nick != session.starter
+          m.reply Announcer.new.attempted_etoke_theft(session.starter)
+          return
+        end
+
+        session.start
       end
 
       match /start anyway/i, method: :start_anyway
@@ -83,7 +88,7 @@ module Cinch
           return
         end
 
-        session.force_start
+        session.start
       end
 
       # Helper methods
