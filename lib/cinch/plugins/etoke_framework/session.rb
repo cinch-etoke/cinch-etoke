@@ -17,7 +17,7 @@ module Cinch
           @channel = channel
           @announcer = Announcer.new || options[:announcer]
           @tokers = options[:tokers] || []
-          @timers = []
+          @announcement_timers = []
           @timer_starter = timer_starter || CinchBridge::NullTimerStarter.new
           @state = :not_started # :not_started -> :started -> :finished
         end
@@ -26,9 +26,9 @@ module Cinch
           @starter = starter
           @tokers << @starter
 
-          @timers << @timer_starter.set(FIRST_ANNOUNCEMENT_AT) { @channel.send @announcer.two_minute_warning(tokers: tokers, starter: starter) }
-          @timers << @timer_starter.set(AUTO_TOKE_WARNING) { @channel.send @announcer.autotoke_starting(tokers: tokers, starter: starter) }
-          @timers << @timer_starter.set(AUTO_TOKE_STARTS) { force_start }
+          @announcement_timers << @timer_starter.set(FIRST_ANNOUNCEMENT_AT) { @channel.send @announcer.two_minute_warning(tokers: tokers, starter: starter) }
+          @announcement_timers << @timer_starter.set(AUTO_TOKE_WARNING) { @channel.send @announcer.autotoke_starting(tokers: tokers, starter: starter) }
+          @autotoke_timer = @timer_starter.set(AUTO_TOKE_STARTS) { perform_initial_etoke }
 
           @channel.send @announcer.session_started(starter)
         end
@@ -55,10 +55,10 @@ module Cinch
 
         def force_start
           return unless @state == :not_started
+          @autotoke_timer.stop
+          perform_initial_etoke
+        end
 
-          @started_at = Time.now
-          @timers.each { |t| t.stop }
-          perform_etoke
         def eligible_for_retoke?
           return false if @state != :finished
           @started_at >= (Time.now - RETOKE_TIME_LIMIT)
@@ -69,8 +69,14 @@ module Cinch
           perform_etoke
         end
 
-        private def perform_etoke
+        private def perform_initial_etoke
           @state = :started
+          @started_at = Time.now
+          @announcement_timers.each { |t| t.stop }
+          perform_etoke
+        end
+
+        private def perform_etoke
           @channel.send @announcer.toke_starting(tokers: tokers, starter: starter)
           EtokePerformer.new(
             session: self,
