@@ -3,7 +3,6 @@ require "cinch/plugins/etoke_framework/formatter"
 module Cinch
   module Plugins
     module EtokeFramework
-      # TODO: Rename to 'Messages' or something
       class Announcer
         def attempted_etoke_theft(starter)
           Formatter.default "Stop trying to steal #{starter}'s etoke!! Use !start anyway if they fell asleep!"
